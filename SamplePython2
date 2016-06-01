@@ -1,0 +1,35 @@
+class PrettyPrint:
+
+     dr=0
+
+     def pr(self,mystr):
+        
+        empty=" "*int((self.dr-len(mystr)-2)/2)
+        
+       
+        if len(mystr) % 2 != self.dr % 2:
+            
+            after_empty=empty + " "
+            
+        else:
+             
+            after_empty=empty
+            
+
+        print(self.dr*"-")
+
+        
+        print("I%s%s%sI" % (empty,mystr,after_empty))
+      
+        print(self.dr*"-")
+       
+    
+x=PrettyPrint()
+
+user_input=input("Geben Sie ein Text ein: ")
+
+user_input2=int(input("Geben Sie die Laenge ein: "))
+
+x.dr=user_input2
+
+x.pr(user_input)
