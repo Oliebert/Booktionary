@@ -26,9 +26,9 @@ class PrettyPrint:
     
 x=PrettyPrint()
 
-user_input=input("Geben Sie ein Text ein: ")
+user_input=input("Geben Sie ein Text ein   : ")
 
-user_input2=int(input("Geben Sie die Laenge ein: "))
+user_input2=int(input("Geben Sie die Laenge ein    : "))
 
 x.dr=user_input2
 
