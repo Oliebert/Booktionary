@@ -28,7 +28,7 @@ DefinitionPartType = namedtuple('DefinitionPartType',
 DefinitionPart = namedtuple('DefinitionPart', ('type', 'data'))
 
 
-class Dictionary:
+class Dictionary:				#GithHub Library
     def __init__(self, ifo_path):
         self.path = ifo_path
         self._config = self._load_dict_config(ifo_path)
@@ -159,6 +159,7 @@ dic = Dictionary('german_rus2.ifo')
 
 
 def get_words_from_text(text): # nimmt den ganzen Text und trennt den in die Wörter
+			       # takes the entire Text and split it to single words
 
     splitline = text.split()
 
@@ -167,6 +168,7 @@ def get_words_from_text(text): # nimmt den ganzen Text und trennt den in die Wö
 count = {}
 
 def sort_words_by_frequency(words): # sortiert die Wörter nach Häufigkeit
+				    # sorts the words according to frequency
     for i in words:
 
         i = i.lower()
@@ -177,9 +179,9 @@ def sort_words_by_frequency(words): # sortiert die Wörter nach Häufigkeit
 
         else:
 
-            count[i] = 1#?
+            count[i] = 1
 
-    gefiltert = sorted(count.items(), key=lambda x: x[1], reverse=True)
+    gefiltert = sorted(count.items(), key = lambda x: x[1], reverse = True)
     '''  The method items() returns a list of dict's (key, value) tuple pairs- v naschem sluchae tupel slovo- ego chastota
     key=lambda x: x[1]- sortirovka idet po chastote (a ne po slovu-index 0)
     BSP:>>> def getKey(item)://  return item[0]//>>> l = [[2, 3], [6, 7], [3, 34], [24, 64], [1, 43]]//>>> sorted(l, key=getKey)//[[1, 43], [2, 3], [3, 34], [6, 7], [24, 64]]-sortirovka po pervomu elementu
@@ -355,16 +357,17 @@ ScreenManagement: # root Screen
 
 sm = ScreenManager()
 
-sm.add_widget(Main_Screen(name='Main_Screen'))
+sm.add_widget(Main_Screen(name = 'Main_Screen'))
 
-sm.add_widget(Load_file_Screen(name='Load_file_Screen'))
+sm.add_widget(Load_file_Screen(name = 'Load_file_Screen'))
 
-sm.add_widget(Save_translation_Screen(name='Save_translation_Screen'))
+sm.add_widget(Save_translation_Screen(name = 'Save_translation_Screen'))
 
 
 class Whatever(App):
 
-    def build(self): #Initializieren und Zurückgeben die Root Widgets:
+    def build(self): #Initialisieren und Zurückgeben die Root Widgets:
+		     #Initialize and return the root widgets
 
         return sm
 
