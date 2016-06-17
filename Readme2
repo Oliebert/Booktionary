@@ -1,3 +1,14 @@
-This is a git repo
+Die Beschreibung:
+
+Meine Idee ein Programm zu creieren war folgende:
+Fast jeder, denke ich so zumindest, hat ein Lieblingsbuch. Ich benutze mein Lieblingsbuch um eine Spache zu lernen. Da ich schon die Inhalte kenne, fällt mir leichter einen Zusammenhang zwischen fremden Wörtern herauszufinden.
+Es gibt viele Apps wie z.B. Memrise, DuoLingo fürs Sprachen lernen. Es gibt aber keinen, der lässt ein Buch runterzuladen, deren Inhalt Übersetzen und nach änlichen Techniken wie diese übliche Apps die Wörter-Samlung  fürs Lernen zur Verfügung zu stellen.
+Mein Progamm macht das. 
+1) Laden wir unseres Buch herunter (Load file)
+2) Wir wollen eine Wörter-Sammlung   und deren Übersetzung des Buchs zur Verfügung haben. 
+Als Übersetzer habe ich ein Wörterbuch Im StarDict Format und eine Bibliothek, die ich auf Github gefunden habe, benutzt. (Create Collection)
+die Wörter werden nach Häufigkeit aus dem text rauszusortiert 
+So, wenn man meist verwendete Wörter im Buch kennt, kann man so mehr oder weniger der Inhalt schon verstehen
+unsere Wörter-Sammlung zum Lernen kann ich dann speichern. (Save)
 
 
