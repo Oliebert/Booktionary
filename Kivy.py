@@ -155,11 +155,26 @@ class Dictionary:				#GithHub Library
         return self._index.keys()
 
 
-dic = Dictionary('german_rus2.ifo')
+class Load_Dictionary_Screen(Screen):
 
+    def load_dic(self,path, filename):
+        new_dic = os.path.join(path, filename[0])
+        dic_1 = Dictionary(new_dic)  # dic = Dictionary('german_rus2.ifo')
+        dic_1.load_dic(new_dic)
+
+        '''with open(os.path.join(path, filename[0])) as f:
+
+            sm.get_screen('Main_Screen').ids.T1.text = f.read()# get_screen - gibt Text aus einen anderen Screen zurück
+            sm.current = 'Main_Screen' # kehrt zu main Screen zurück
+        '''
+    def selected(self, filename):
+        print ("selected: %s" %  filename)
+
+
+#dic = Dictionary('german_rus2.ifo')
+#dic.load_dic(new_dic)
 
 def get_words_from_text(text): # nimmt den ganzen Text und trennt den in die Wörter
-			       # takes the entire Text and split it to single words
 
     splitline = text.split()
 
@@ -168,7 +183,6 @@ def get_words_from_text(text): # nimmt den ganzen Text und trennt den in die Wö
 count = {}
 
 def sort_words_by_frequency(words): # sortiert die Wörter nach Häufigkeit
-				    # sorts the words according to frequency
     for i in words:
 
         i = i.lower()
@@ -179,12 +193,13 @@ def sort_words_by_frequency(words): # sortiert die Wörter nach Häufigkeit
 
         else:
 
-            count[i] = 1
+            count[i] = 1#?
 
-    gefiltert = sorted(count.items(), key = lambda x: x[1], reverse = True)
+    gefiltert = sorted(count.items(), key=lambda x: x[1], reverse=True)
     '''  The method items() returns a list of dict's (key, value) tuple pairs- v naschem sluchae tupel slovo- ego chastota
     key=lambda x: x[1]- sortirovka idet po chastote (a ne po slovu-index 0)
     BSP:>>> def getKey(item)://  return item[0]//>>> l = [[2, 3], [6, 7], [3, 34], [24, 64], [1, 43]]//>>> sorted(l, key=getKey)//[[1, 43], [2, 3], [3, 34], [6, 7], [24, 64]]-sortirovka po pervomu elementu
+    reverse=True - in absteigende reihenfolge
     '''
     return gefiltert
 
@@ -233,6 +248,9 @@ class Save_translation_Screen(Screen):
     def selected(self, filename):
         print ("selected: %s" % filename[0])
 
+
+
+
 root = Builder.load_string('''
 
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
@@ -265,7 +283,7 @@ ScreenManagement: # root Screen
                 on_release: Load_file_Screen.open(filechooser.path, filechooser.selection)
 
 
-<Save_translation_Screen>:
+<Save_translation_Screen>: #Class rule
     id:Save_translation_Screen
 
     BoxLayout:
@@ -292,6 +310,29 @@ ScreenManagement: # root Screen
             Button:
                 text: "Save"
                 on_release: Save_translation_Screen.save(filechooser.path, text_input.text)
+
+<Load_Dictionary_Screen>:
+    id:Load_Dictionary_Screen # variablen für den Zugriff
+    name:'Load_Dictionary_Screen'
+
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.root.current = 'Main_Screen'
+
+            Button:
+                text: "open"
+                on_release: Load_Dictionary_Screen.load_dic(filechooser.path, filechooser.selection)
 
 <Main_Screen>:
     name: 'Main_Screen'
@@ -333,45 +374,51 @@ ScreenManagement: # root Screen
             TextInput:
 
                 id: T1
-                text: " Text1"
+                text: " "
                 multiline: True
 
             TextInput:
 
                 id: T2
-                text: " Text2"
+                text: " "
                 multiline: True
 
         BoxLayout:
-
             id: ButtonBox3
             size_hint_y: None
             height: 50
+
+
+
+            Button:
+
+                text: "Load Dictionary"
+                on_press:app.root.current = 'Load_Dictionary_Screen'
 
             Button:
 
                 text: "Create collection"
                 on_press:Main_Screen.button_pressed()
 
+
 ''')
 
 sm = ScreenManager()
 
-sm.add_widget(Main_Screen(name = 'Main_Screen'))
+sm.add_widget(Main_Screen(name='Main_Screen'))
 
-sm.add_widget(Load_file_Screen(name = 'Load_file_Screen'))
+sm.add_widget(Load_file_Screen(name='Load_file_Screen'))
 
-sm.add_widget(Save_translation_Screen(name = 'Save_translation_Screen'))
+sm.add_widget(Save_translation_Screen(name='Save_translation_Screen'))
+
+sm.add_widget(Load_Dictionary_Screen(name='Load_Dictionary_Screen'))
 
 
 class Whatever(App):
 
-    def build(self): #Initialisieren und Zurückgeben die Root Widgets:
-		     #Initialize and return the root widgets
+    def build(self): #Initializieren und Zurückgeben die Root Widgets:
 
         return sm
 
 Whatever().run()
-
-
 
