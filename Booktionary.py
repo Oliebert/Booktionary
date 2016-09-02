@@ -27,8 +27,27 @@ DefinitionPartType = namedtuple('DefinitionPartType',
                                 ('TEXT', 'HTML'))('m', 'h')
 DefinitionPart = namedtuple('DefinitionPart', ('type', 'data'))
 
+class Load_Dictionary_Screen(Screen):
+    ''' def __init__(self, path, filename):
+        self.path=path
+        self.filename=filename
+    '''
 
-class Dictionary:				#GithHub Library
+    def load_dic(self,path, filename):
+        new_dic = os.path.join(path, filename[0])
+        dic = Dictionary(new_dic)
+
+
+        '''with open(os.path.join(path, filename[0])) as f:
+
+            sm.get_screen('Main_Screen').ids.T1.text = f.read()# get_screen - gibt Text aus einen anderen Screen zurück
+        '''
+        sm.current = 'Main_Screen' # kehrt zu main Screen zurück
+
+    def selected(self, new_dic):
+        print ("selected: %s" %  new_dic)
+
+class Dictionary(Load_Dictionary_Screen):				#GithHub Library
     def __init__(self, ifo_path):
         self.path = ifo_path
         self._config = self._load_dict_config(ifo_path)
@@ -154,23 +173,7 @@ class Dictionary:				#GithHub Library
 
         return self._index.keys()
 
-
-class Load_Dictionary_Screen(Screen):
-
-    def load_dic(self,path, filename):
-        new_dic = os.path.join(path, filename[0])
-        dic_1 = Dictionary(new_dic)  # dic = Dictionary('german_rus2.ifo')
-        dic_1.load_dic(new_dic)
-
-        '''with open(os.path.join(path, filename[0])) as f:
-
-            sm.get_screen('Main_Screen').ids.T1.text = f.read()# get_screen - gibt Text aus einen anderen Screen zurück
-            sm.current = 'Main_Screen' # kehrt zu main Screen zurück
-        '''
-    def selected(self, filename):
-        print ("selected: %s" %  filename)
-
-
+#dic = Load_Dictionary_Screen(new_dic)
 dic = Dictionary('german_rus2.ifo')
 #dic.load_dic(new_dic)
 
@@ -209,6 +212,7 @@ class ScreenManagement(ScreenManager):
 class Main_Screen(Screen):
 
     def button_pressed(self):
+        #dic = Dictionary(new_dic)
         textline = self.ids.T1.text # Zugriff auf class Main_Screen, TextInput, id: text
         words = get_words_from_text(textline)
         srt = sort_words_by_frequency(words)
@@ -247,8 +251,6 @@ class Save_translation_Screen(Screen):
             sm.current = 'Main_Screen'
     def selected(self, filename):
         print ("selected: %s" % filename[0])
-
-
 
 
 root = Builder.load_string('''
@@ -331,7 +333,7 @@ ScreenManagement: # root Screen
                 on_release: app.root.current = 'Main_Screen'
 
             Button:
-                text: "open"
+                text: "load"
                 on_release: Load_Dictionary_Screen.load_dic(filechooser.path, filechooser.selection)
 
 <Main_Screen>:
