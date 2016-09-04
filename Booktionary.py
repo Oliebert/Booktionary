@@ -37,12 +37,12 @@ class Load_Dictionary_Screen(Screen):
         new_dic = os.path.join(path, filename[0])
         dic = Dictionary(new_dic)
 
-
         '''with open(os.path.join(path, filename[0])) as f:
 
             sm.get_screen('Main_Screen').ids.T1.text = f.read()# get_screen - gibt Text aus einen anderen Screen zurück
         '''
         sm.current = 'Main_Screen' # kehrt zu main Screen zurück
+
 
     def selected(self, new_dic):
         print ("selected: %s" %  new_dic)
@@ -67,7 +67,7 @@ class Dictionary(Load_Dictionary_Screen):				#GithHub Library
             # Discard thheade header
             config_file.readline()
 
-            config = dict(line.rstrip().split('=', 1) for line in config_file)
+            config = dict(line.rstrip().split('=',1) for line in config_file)
 
         return config
 
@@ -173,7 +173,9 @@ class Dictionary(Load_Dictionary_Screen):				#GithHub Library
 
         return self._index.keys()
 
-#dic = Load_Dictionary_Screen(new_dic)
+#dic = Load_Dictionary_Screen()
+#new_dic = dic.load_dic(path, filename[0])
+#dic = Dictionary('german_rus2.ifo')
 dic = Dictionary('german_rus2.ifo')
 #dic.load_dic(new_dic)
 
