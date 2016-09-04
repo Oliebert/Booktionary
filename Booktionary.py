@@ -27,27 +27,7 @@ DefinitionPartType = namedtuple('DefinitionPartType',
                                 ('TEXT', 'HTML'))('m', 'h')
 DefinitionPart = namedtuple('DefinitionPart', ('type', 'data'))
 
-class Load_Dictionary_Screen(Screen):
-    ''' def __init__(self, path, filename):
-        self.path=path
-        self.filename=filename
-    '''
-
-    def load_dic(self,path, filename):
-        new_dic = os.path.join(path, filename[0])
-        dic = Dictionary(new_dic)
-
-        '''with open(os.path.join(path, filename[0])) as f:
-
-            sm.get_screen('Main_Screen').ids.T1.text = f.read()# get_screen - gibt Text aus einen anderen Screen zurück
-        '''
-        sm.current = 'Main_Screen' # kehrt zu main Screen zurück
-
-
-    def selected(self, new_dic):
-        print ("selected: %s" %  new_dic)
-
-class Dictionary(Load_Dictionary_Screen):				#GithHub Library
+class Dictionary():				#GithHub Library
     def __init__(self, ifo_path):
         self.path = ifo_path
         self._config = self._load_dict_config(ifo_path)
@@ -67,7 +47,7 @@ class Dictionary(Load_Dictionary_Screen):				#GithHub Library
             # Discard thheade header
             config_file.readline()
 
-            config = dict(line.rstrip().split('=',1) for line in config_file)
+            config = dict(line.rstrip().split('=', 1) for line in config_file)
 
         return config
 
@@ -173,10 +153,27 @@ class Dictionary(Load_Dictionary_Screen):				#GithHub Library
 
         return self._index.keys()
 
+#dic = Dictionary('german_rus2.ifo')
+
+class Load_Dictionary_Screen(Screen):
+    ''' def __init__(self, path, filename):
+        self.path=path
+        self.filename=filename
+    '''
+
+    def load_dic(self,path, filename):
+        new_dic = os.path.join(path, filename[0])
+        sm.get_screen('Main_Screen').ids.DictLoadButton.dict_path = new_dic  # get_screen - gibt Text aus einen anderen Screen zurück
+        sm.current = 'Main_Screen' # kehrt zu main Screen zurück
+
+    def selected(self, new_dic):
+        print ("selected: %s" %  new_dic)
+
+
 #dic = Load_Dictionary_Screen()
 #new_dic = dic.load_dic(path, filename[0])
 #dic = Dictionary('german_rus2.ifo')
-dic = Dictionary('german_rus2.ifo')
+#dic = Dictionary('german_rus2.ifo')
 #dic.load_dic(new_dic)
 
 def get_words_from_text(text): # nimmt den ganzen Text und trennt den in die Wörter
@@ -214,7 +211,8 @@ class ScreenManagement(ScreenManager):
 class Main_Screen(Screen):
 
     def button_pressed(self):
-        #dic = Dictionary(new_dic)
+        dic_path = self.ids.DictLoadButton.dict_path
+        dic = Dictionary(dic_path)
         textline = self.ids.T1.text # Zugriff auf class Main_Screen, TextInput, id: text
         words = get_words_from_text(textline)
         srt = sort_words_by_frequency(words)
@@ -245,7 +243,6 @@ class Load_file_Screen(Screen):
     def selected(self, filename):
         print ("selected: %s" % filename[0])
 
-
 class Save_translation_Screen(Screen):
     def save(self, path, filename):
         with open(os.path.join(path, filename), 'w') as f:
@@ -253,7 +250,6 @@ class Save_translation_Screen(Screen):
             sm.current = 'Main_Screen'
     def selected(self, filename):
         print ("selected: %s" % filename[0])
-
 
 root = Builder.load_string('''
 
@@ -395,8 +391,9 @@ ScreenManagement: # root Screen
 
 
             Button:
-
+                id: DictLoadButton
                 text: "Load Dictionary"
+                dict_path: ""
                 on_press:app.root.current = 'Load_Dictionary_Screen'
 
             Button:
