@@ -20,6 +20,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 import os
+import PyPDF2
 
 IndexEntry = namedtuple('IndexEntry', ('offset', 'size'))
 
@@ -211,9 +212,39 @@ class ScreenManagement(ScreenManager):
 class Main_Screen(Screen):
 
     def button_pressed(self):
+
         dic_path = self.ids.DictLoadButton.dict_path
         dic = Dictionary(dic_path)
-        textline = self.ids.T1.text # Zugriff auf class Main_Screen, TextInput, id: text
+
+
+        '''>>> base=os.path.basename('/root/dir/sub/file.ext')
+           >>> base
+                    'file.ext'
+              if filename.endswith('.pdf'):
+                            pdfFiles.append(filename)
+                        pdfFiles.sort(key=str.lower)
+                            pdfWriter = PyPDF2.PdfFileWriter()
+
+                            
+                            def getPDFContent(path):
+                            content = ""
+
+                            # Load PDF into pyPDF
+                            pdf = PyPDF2.PdfFileReader(open(path, "rb"))
+                            # Iterate pages
+                            for i in range(0, pdf.getNumPages()):
+                                # Extract text from page and add to content
+                                content += pdf.getPage(i).extractText() + "\n"
+                            # Collapse whitespace
+                            content = " ".join(content.replace(u"\xa0", " ").strip().split())
+                            return content
+
+                            print (getPDFContent("Anschreiben.pdf").encode("ascii", "ignore"))
+            else:
+
+
+        '''
+        textline = self.ids.T1.text  # Zugriff auf class Main_Screen, TextInput, id: text
         words = get_words_from_text(textline)
         srt = sort_words_by_frequency(words)
         word1 = ""
@@ -420,6 +451,6 @@ class Whatever(App):
     def build(self): #Initializieren und Zurückgeben die Root Widgets:
 
         return sm
-
-Whatever().run()
+if __name__ == '__main__':
+    Whatever().run()
 
