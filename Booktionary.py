@@ -157,14 +157,13 @@ class Dictionary():				#GithHub Library
 #dic = Dictionary('german_rus2.ifo')
 
 class Load_Dictionary_Screen(Screen):
-    ''' def __init__(self, path, filename):
-        self.path=path
-        self.filename=filename
-    '''
 
     def load_dic(self,path, filename):
+
         new_dic = os.path.join(path, filename[0])
+
         sm.get_screen('Main_Screen').ids.DictLoadButton.dict_path = new_dic  # get_screen - gibt Text aus einen anderen Screen zurück
+
         sm.current = 'Main_Screen' # kehrt zu main Screen zurück
 
     def selected(self, new_dic):
@@ -215,35 +214,31 @@ class Main_Screen(Screen):
 
         dic_path = self.ids.DictLoadButton.dict_path
         dic = Dictionary(dic_path)
+        filename_2=self.ids.loadfile.filename_2
 
 
-        '''>>> base=os.path.basename('/root/dir/sub/file.ext')
-           >>> base
-                    'file.ext'
-              if filename.endswith('.pdf'):
-                            pdfFiles.append(filename)
-                        pdfFiles.sort(key=str.lower)
-                            pdfWriter = PyPDF2.PdfFileWriter()
 
-                            
-                            def getPDFContent(path):
-                            content = ""
+        print(filename_2)
 
-                            # Load PDF into pyPDF
-                            pdf = PyPDF2.PdfFileReader(open(path, "rb"))
-                            # Iterate pages
-                            for i in range(0, pdf.getNumPages()):
-                                # Extract text from page and add to content
-                                content += pdf.getPage(i).extractText() + "\n"
-                            # Collapse whitespace
-                            content = " ".join(content.replace(u"\xa0", " ").strip().split())
-                            return content
+        '''if file_name.endswith('.pdf'): # überprüft fileerweiterung
 
-                            print (getPDFContent("Anschreiben.pdf").encode("ascii", "ignore"))
-            else:
+                    content = ""
+
+                    # Load PDF into pyPDF
+                    pdf = PyPDF2.PdfFileReader(open(path, "rb"))
+                    # Iterate pages
+                    for i in range(0, pdf.getNumPages()):
+                        # Extract text from page and add to content
+                        content += pdf.getPage(i).extractText() + "\n"
+                    # Collapse whitespace
+                    content = " ".join(content.replace(u"\xa0", " ").strip().split())
+                    return content
+
+                    print(getPDFContent("Anschreiben.pdf").encode("ascii", "ignore"))
 
 
         '''
+
         textline = self.ids.T1.text  # Zugriff auf class Main_Screen, TextInput, id: text
         words = get_words_from_text(textline)
         srt = sort_words_by_frequency(words)
@@ -265,6 +260,10 @@ class Main_Screen(Screen):
 class Load_file_Screen(Screen):
 
     def open(self, path, filename):
+        text_path= os.path.join(path, filename[0])
+        file_name = os.path.basename(text_path)  # gibt filename zurück
+         # get_screen - gibt Text aus einen anderen Screen zurück
+        sm.get_screen('Main_Screen').ids.loadfile.filename_2 = file_name
 
         with open(os.path.join(path, filename[0])) as f:
 
@@ -272,7 +271,7 @@ class Load_file_Screen(Screen):
             sm.current = 'Main_Screen' # kehrt zu main Screen zurück
 
     def selected(self, filename):
-        print ("selected: %s" % filename[0])
+         print ("selected: %s" % filename[0])
 
 class Save_translation_Screen(Screen):
     def save(self, path, filename):
@@ -363,6 +362,7 @@ ScreenManagement: # root Screen
 
             Button:
                 text: "load"
+
                 on_release: Load_Dictionary_Screen.load_dic(filechooser.path, filechooser.selection)
 
 <Main_Screen>:
@@ -388,6 +388,7 @@ ScreenManagement: # root Screen
 
                 id: loadfile
                 text: "Load file"
+                filename_2:""
                 on_press:app.root.current = 'Load_file_Screen'
 
 
@@ -425,6 +426,7 @@ ScreenManagement: # root Screen
                 id: DictLoadButton
                 text: "Load Dictionary"
                 dict_path: ""
+
                 on_press:app.root.current = 'Load_Dictionary_Screen'
 
             Button:
