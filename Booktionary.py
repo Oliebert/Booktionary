@@ -1,26 +1,16 @@
 # !/bin/python3
 # -*- coding: utf-8 -*-
-import sys
 import gzip
-import struct
-from os import path
-from itertools import takewhile
-from collections import namedtuple, defaultdict
-from io import open
-from kivy.app import App
-from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.boxlayout import BoxLayout
-from kivy.app import App
-from kivy.lang import Builder
-from kivy.uix.widget import Widget
-from kivy.factory import Factory
-from kivy.properties import ObjectProperty
-from kivy.uix.popup import Popup
-from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 import os
-import PyPDF2
+import struct
+from collections import namedtuple, defaultdict
+import io
+import itertools
+from os import path
+
+import kivy.app
+from kivy.lang import Builder
+from kivy.uix.screenmanager import ScreenManager, Screen
 
 IndexEntry = namedtuple('IndexEntry', ('offset', 'size'))
 
@@ -28,8 +18,10 @@ DefinitionPartType = namedtuple('DefinitionPartType',
                                 ('TEXT', 'HTML'))('m', 'h')
 DefinitionPart = namedtuple('DefinitionPart', ('type', 'data'))
 
-class Dictionary():				#GithHub Library
+
+class Dictionary:  # GithHub Library
     def __init__(self, ifo_path):
+        # type: (object) -> object
         self.path = ifo_path
         self._config = self._load_dict_config(ifo_path)
 
@@ -41,10 +33,10 @@ class Dictionary():				#GithHub Library
             #     here
             self._definitions_file = gzip.open(dict_root + '.dict.dz', 'rb')
         except IOError:
-            self._definitions_file = open(dict_root + '.dict', 'rb')
+            self._definitions_file = io.open(dict_root + '.dict', 'rb')
 
     def _load_dict_config(self, ifo_path):
-        with open(ifo_path, encoding='utf-8') as config_file:
+        with io.open(ifo_path, encoding='utf-8') as config_file:
             # Discard thheade header
             config_file.readline()
 
@@ -54,7 +46,7 @@ class Dictionary():				#GithHub Library
 
     def _load_syn_list(self, dict_root):
         try:
-            syn_list_file = open(dict_root + '.syn', 'rb')
+            syn_list_file = io.open(dict_root + '.syn', 'rb')
         except IOError:
             return {}
 
@@ -82,7 +74,7 @@ class Dictionary():				#GithHub Library
 
     def _load_word_list(self, dict_root):
         try:
-            index_file = open(dict_root + '.idx', 'rb')
+            index_file = io.open(dict_root + '.idx', 'rb')
         except IOError:
             index_file = gzip.open(dict_root + '.idx.gz', 'rb')
 
@@ -128,8 +120,8 @@ class Dictionary():				#GithHub Library
         return index
 
     def _read_definition_part(self, part_type, definition_data):
-        return bytearray(takewhile(lambda byte: byte != 0x00,
-                                   definition_data)).decode('utf-8')
+        return bytearray(itertools.takewhile(lambda byte: byte != 0x00,
+                                             definition_data)).decode('utf-8')
 
     def __len__(self):
         return len(self._index)
@@ -154,37 +146,36 @@ class Dictionary():				#GithHub Library
 
         return self._index.keys()
 
-#dic = Dictionary('german_rus2.ifo')
 
 class Load_Dictionary_Screen(Screen):
+    
+    def load_dic(path, filename):
+        """
 
-    def load_dic(self,path, filename):
-
+        :type filename: object
+        """
         new_dic = os.path.join(path, filename[0])
 
-        sm.get_screen('Main_Screen').ids.DictLoadButton.dict_path = new_dic  # get_screen - gibt Text aus einen anderen Screen zurück
+        sm.get_screen(
+            'Main_Screen').ids.DictLoadButton.dict_path = new_dic  # get_screen - gibt Text aus einen anderen Screen zurück
 
-        sm.current = 'Main_Screen' # kehrt zu main Screen zurück
+        sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
 
     def selected(self, new_dic):
-        print ("selected: %s" %  new_dic)
+        print ("selected: %s" % new_dic)
 
 
-#dic = Load_Dictionary_Screen()
-#new_dic = dic.load_dic(path, filename[0])
-#dic = Dictionary('german_rus2.ifo')
-#dic = Dictionary('german_rus2.ifo')
-#dic.load_dic(new_dic)
-
-def get_words_from_text(text): # nimmt den ganzen Text und trennt den in die Wörter
+def get_words_from_text(text):  # nimmt den ganzen Text und trennt den in die Wörter
 
     splitline = text.split()
 
     return splitline
 
+
 count = {}
 
-def sort_words_by_frequency(words): # sortiert die Wörter nach Häufigkeit
+
+def sort_words_by_frequency(words):  # sortiert die Wörter nach Häufigkeit
     for i in words:
 
         i = i.lower()
@@ -195,49 +186,24 @@ def sort_words_by_frequency(words): # sortiert die Wörter nach Häufigkeit
 
         else:
 
-            count[i] = 1#?
+            count[i] = 1  
 
     gefiltert = sorted(count.items(), key=lambda x: x[1], reverse=True)
-    '''  The method items() returns a list of dict's (key, value) tuple pairs- v naschem sluchae tupel slovo- ego chastota
-    key=lambda x: x[1]- sortirovka idet po chastote (a ne po slovu-index 0)
-    BSP:>>> def getKey(item)://  return item[0]//>>> l = [[2, 3], [6, 7], [3, 34], [24, 64], [1, 43]]//>>> sorted(l, key=getKey)//[[1, 43], [2, 3], [3, 34], [6, 7], [24, 64]]-sortirovka po pervomu elementu
-    reverse=True - in absteigende reihenfolge
-    '''
+
     return gefiltert
+
 
 class ScreenManagement(ScreenManager):
     pass
 
-class Main_Screen(Screen):
 
+class Main_Screen(Screen):
     def button_pressed(self):
 
         dic_path = self.ids.DictLoadButton.dict_path
         dic = Dictionary(dic_path)
-        filename_2=self.ids.loadfile.filename_2
+        filename_2 = self.ids.loadfile.filename_2
 
-
-
-        print(filename_2)
-
-        '''if file_name.endswith('.pdf'): # überprüft fileerweiterung
-
-                    content = ""
-
-                    # Load PDF into pyPDF
-                    pdf = PyPDF2.PdfFileReader(open(path, "rb"))
-                    # Iterate pages
-                    for i in range(0, pdf.getNumPages()):
-                        # Extract text from page and add to content
-                        content += pdf.getPage(i).extractText() + "\n"
-                    # Collapse whitespace
-                    content = " ".join(content.replace(u"\xa0", " ").strip().split())
-                    return content
-
-                    print(getPDFContent("Anschreiben.pdf").encode("ascii", "ignore"))
-
-
-        '''
 
         textline = self.ids.T1.text  # Zugriff auf class Main_Screen, TextInput, id: text
         words = get_words_from_text(textline)
@@ -246,40 +212,44 @@ class Main_Screen(Screen):
         word2 = ""
         for word in srt:
 
-            word = next(iter(word)) #it returns the next value from the iterator, trennt sets in Wörter
+            word = next(iter(word))  # it returns the next value from the iterator, trennt sets in Wörter
 
-            word1 = word1 + word + "\n" # every Word from new line
+            word1 = word1 + word + "\n"  # every Word from new line
 
             if word in dic:
 
                 for entry in dic[word]:
-                    word2 = word2 + entry.data # add translation
+                    word2 = word2 + entry.data  # add translation
 
         self.ids.T2.text = word2
 
-class Load_file_Screen(Screen):
 
+class Load_file_Screen(Screen):
     def open(self, path, filename):
-        text_path= os.path.join(path, filename[0])
+        text_path = os.path.join(path, filename[0])
         file_name = os.path.basename(text_path)  # gibt filename zurück
-         # get_screen - gibt Text aus einen anderen Screen zurück
+                                                 # get_screen - gibt Text aus einen anderen Screen zurück
         sm.get_screen('Main_Screen').ids.loadfile.filename_2 = file_name
 
-        with open(os.path.join(path, filename[0])) as f:
-
-            sm.get_screen('Main_Screen').ids.T1.text = f.read()# get_screen - gibt Text aus einen anderen Screen zurück
-            sm.current = 'Main_Screen' # kehrt zu main Screen zurück
+        with io.open(os.path.join(path, filename[0])) as f:
+            sm.get_screen(
+                'Main_Screen').ids.T1.text = f.read()  # get_screen - gibt Text aus einen anderen Screen zurück
+            sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
 
     def selected(self, filename):
-         print ("selected: %s" % filename[0])
+        # type: (object) -> object
+        print ("selected: %s" % filename[0])
+
 
 class Save_translation_Screen(Screen):
     def save(self, path, filename):
-        with open(os.path.join(path, filename), 'w') as f:
+        with io.open(os.path.join(path, filename), 'w') as f:
             f.write(sm.get_screen('Main_Screen').ids.T2.text)
             sm.current = 'Main_Screen'
+
     def selected(self, filename):
         print ("selected: %s" % filename[0])
+
 
 root = Builder.load_string('''
 
@@ -448,11 +418,11 @@ sm.add_widget(Save_translation_Screen(name='Save_translation_Screen'))
 sm.add_widget(Load_Dictionary_Screen(name='Load_Dictionary_Screen'))
 
 
-class Whatever(App):
-
-    def build(self): #Initializieren und Zurückgeben die Root Widgets:
+class Whatever(kivy.app.App):
+    def build(self):  # Initializieren und Zurückgeben die Root Widgets:
 
         return sm
+
+
 if __name__ == '__main__':
     Whatever().run()
-
