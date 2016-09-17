@@ -1,5 +1,5 @@
 # !/bin/python3
-# -*- coding: utf-8 -*-
+#coding=utf-8
 import gzip
 import os
 import struct
@@ -7,10 +7,13 @@ from collections import namedtuple, defaultdict
 import io
 import itertools
 from os import path
+import codecs
 
 import kivy.app
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
+import Converter
+from os.path import isfile, splitext
 
 IndexEntry = namedtuple('IndexEntry', ('offset', 'size'))
 
@@ -149,7 +152,7 @@ class Dictionary:  # GithHub Library
 
 class Load_Dictionary_Screen(Screen):
     
-    def load_dic(path, filename):
+    def load_dic(self,path, filename):
         """
 
         :type filename: object
@@ -202,8 +205,9 @@ class Main_Screen(Screen):
 
         dic_path = self.ids.DictLoadButton.dict_path
         dic = Dictionary(dic_path)
-        filename_2 = self.ids.loadfile.filename_2
 
+        filename_2 = self.ids.loadfile.filename_2
+       # Converter.Converter_1(filename_2)
 
         textline = self.ids.T1.text  # Zugriff auf class Main_Screen, TextInput, id: text
         words = get_words_from_text(textline)
@@ -229,9 +233,25 @@ class Load_file_Screen(Screen):
         text_path = os.path.join(path, filename[0])
         file_name = os.path.basename(text_path)  # gibt filename zurück
                                                  # get_screen - gibt Text aus einen anderen Screen zurück
-        sm.get_screen('Main_Screen').ids.loadfile.filename_2 = file_name
+        if file_name.endswith('.txt'):
 
-        with io.open(os.path.join(path, filename[0])) as f:
+            sm.get_screen('Main_Screen').ids.loadfile.filename_2 = file_name
+
+        else:
+            ofname, iftype = splitext(file_name)[0] + '.txt', splitext(file_name)[1].lower()
+            con = Converter.Converter()
+            if iftype == '.doc':
+                con.doc_txt(file_name, ofname)
+            elif iftype == '.docx':
+                con.docx_txt(file_name, ofname)
+            elif iftype == '.odt':
+                con.odt_txt(file_name, ofname)
+            elif iftype in ('.fb2', '.html', '.htm'):
+                con.fb2_txt(file_name, ofname)
+
+            sm.get_screen('Main_Screen').ids.loadfile.filename_2 = ofname
+
+        with io.open(os.path.join(path, filename[0]),encoding="utf8") as f:
             sm.get_screen(
                 'Main_Screen').ids.T1.text = f.read()  # get_screen - gibt Text aus einen anderen Screen zurück
             sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
@@ -239,6 +259,7 @@ class Load_file_Screen(Screen):
     def selected(self, filename):
         # type: (object) -> object
         print ("selected: %s" % filename[0])
+
 
 
 class Save_translation_Screen(Screen):
@@ -359,6 +380,7 @@ ScreenManagement: # root Screen
                 id: loadfile
                 text: "Load file"
                 filename_2:""
+                a: ""
                 on_press:app.root.current = 'Load_file_Screen'
 
 

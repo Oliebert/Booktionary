@@ -75,7 +75,7 @@ class Converter:
                         text += t.decode('utf-16le')
 
                 except UnicodeDecodeError:
-                    t = t.decode('cp1251', 'ignore')
+                    t = t.decode('cp1252', 'ignore')
                     if len (t) > 0:
                         for i in t:
                             if is_ascii(i) is True:
@@ -85,7 +85,7 @@ class Converter:
 
 
             else:
-                t = data.decode('cp1251', 'ignore')
+                t = data.decode('cp1252', 'ignore')
                 for i in t:
                     if is_ascii(i) is True:
                         text += i
@@ -136,7 +136,7 @@ class Converter:
             data = ffr.read()
 
         try: data = data.decode('utf-8')
-        except UnicodeDecodeError: data = data.decode('cp1251')
+        except UnicodeDecodeError: data = data.decode('cp1252')
 
         class MyHTMLParser(HTMLParser):
             text = str()
@@ -151,7 +151,12 @@ class Converter:
 
 
 def convert(ifname):
+    # type: (object) -> object
 
+    """
+
+    :rtype: object
+    """
     ofname, iftype = splitext(ifname)[0] + '.txt', splitext(ifname)[1].lower()
 
     con = Converter()
@@ -166,8 +171,9 @@ def convert(ifname):
         con.fb2_txt(ifname, ofname)
 
 
-def main():
+'''def main():
     print('\"filename\"')
+    convert()
 
     if len(argv) != 2:
         help()
@@ -178,4 +184,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-
+'''
