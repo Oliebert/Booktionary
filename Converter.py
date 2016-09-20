@@ -171,9 +171,9 @@ def convert(ifname):
         con.fb2_txt(ifname, ofname)
 
 
-'''def main():
+def main():
     print('\"filename\"')
-    convert()
+    convert('mail.docx')
 
     if len(argv) != 2:
         help()
@@ -184,4 +184,4 @@ def convert(ifname):
 if __name__ == '__main__':
     main()
 
-'''
+
