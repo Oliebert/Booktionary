@@ -3,10 +3,8 @@
 #Converting from .pdf with PyPDF2 package
 '''
 import PyPDF2
-
 def getPDFContent(path):
     content = ""
-
     # Load PDF into pyPDF
     pdf = PyPDF2.PdfFileReader(open(path, "rb"))
     # Iterate pages
@@ -16,11 +14,8 @@ def getPDFContent(path):
     # Collapse whitespace
     content = " ".join(content.replace(u"\xa0", " ").strip().split())
     return content
-
 print (getPDFContent("filename.pdf").encode("ascii", "ignore"))
-
 #Converting with tika package
-
 from tika import parser
 text = parser.from_file('path')
 print(text)
@@ -31,7 +26,7 @@ from sys import argv
 from os.path import isfile, splitext
 from zipfile import ZipFile
 from xml.etree.ElementTree import parse, XML
-import HTMLParser
+import html.parser
 
 
 def help():
@@ -138,7 +133,7 @@ class Converter:
         try: data = data.decode('utf-8')
         except UnicodeDecodeError: data = data.decode('cp1252')
 
-        class MyHTMLParser(HTMLParser):
+        class MyHTMLParser(html.parser):
             text = str()
             def handle_data(self, data):
                 MyHTMLParser.text += data
@@ -154,7 +149,6 @@ def convert(ifname):
     # type: (object) -> object
 
     """
-
     :rtype: object
     """
     ofname, iftype = splitext(ifname)[0] + '.txt', splitext(ifname)[1].lower()
@@ -173,15 +167,10 @@ def convert(ifname):
 
 def main():
     print('\"filename\"')
-    convert('mail.docx')
-
+    convert('mail_1.docx')
     if len(argv) != 2:
         help()
         exit()
-
     if convert(argv[1]) == 1: ok()
-
 if __name__ == '__main__':
     main()
-
-

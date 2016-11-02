@@ -1,5 +1,5 @@
 # !/bin/python3
-#coding=utf-8
+# -*- coding: utf-8 -*-
 import gzip
 import os
 import struct
@@ -164,8 +164,8 @@ class Load_Dictionary_Screen(Screen):
 
         sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
 
-    def selected(self, new_dic):
-        print ("selected: %s" % new_dic)
+    #def selected(self, new_dic):
+     #   print ("selected: %s" % new_dic)
 
 
 def get_words_from_text(text):  # nimmt den ganzen Text und trennt den in die Wörter
@@ -194,10 +194,6 @@ def sort_words_by_frequency(words):  # sortiert die Wörter nach Häufigkeit
     gefiltert = sorted(count.items(), key=lambda x: x[1], reverse=True)
 
     return gefiltert
-
-
-class ScreenManagement(ScreenManager):
-    pass
 
 
 class Main_Screen(Screen):
@@ -229,13 +225,18 @@ class Main_Screen(Screen):
 
 
 class Load_file_Screen(Screen):
-    def open(self, path, filename):
+    def open_file(self, path, filename):
         text_path = os.path.join(path, filename[0])
         file_name = os.path.basename(text_path)  # gibt filename zurück
                                                  # get_screen - gibt Text aus einen anderen Screen zurück
         if file_name.endswith('.txt'):
 
             sm.get_screen('Main_Screen').ids.loadfile.filename_2 = file_name
+
+            with open(os.path.join(path, filename[0])) as f:
+                sm.get_screen(
+                    'Main_Screen').ids.T1.text = f.read()  # get_screen - gibt Text aus einen anderen Screen zurück
+                sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
 
         else:
             ofname, iftype = splitext(file_name)[0] + '.txt', splitext(file_name)[1].lower()
@@ -251,10 +252,7 @@ class Load_file_Screen(Screen):
 
             sm.get_screen('Main_Screen').ids.loadfile.filename_2 = ofname
 
-        with io.open(os.path.join(path, filename[0]),encoding="utf8") as f:
-            sm.get_screen(
-                'Main_Screen').ids.T1.text = f.read()  # get_screen - gibt Text aus einen anderen Screen zurück
-            sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
+
 
     def selected(self, filename):
         # type: (object) -> object
@@ -276,98 +274,14 @@ root = Builder.load_string('''
 
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 
-ScreenManagement: # root Screen
-
-    transition: FadeTransition()
-
-<Load_file_Screen>:
-    id:Load_file_Screen # variablen für den Zugriff
-    name:'Load_file_Screen'
-
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserIconView:
-            id: filechooser
-
-
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            Button:
-                text: "Cancel"
-                on_release: app.root.current = 'Main_Screen'
-
-            Button:
-                text: "open"
-                on_release: Load_file_Screen.open(filechooser.path, filechooser.selection)
-
-
-<Save_translation_Screen>: #Class rule
-    id:Save_translation_Screen
-
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserIconView:
-            id: filechooser
-            on_selection: text_input.text = self.selection and self.selection[0] or ''
-
-        TextInput:
-            id: text_input
-            size_hint_y: None
-            height: 30
-            multiline: False
-
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            Button:
-                text: "Cancel"
-                on_release: app.root.current = 'Main_Screen'
-
-            Button:
-                text: "Save"
-                on_release: Save_translation_Screen.save(filechooser.path, text_input.text)
-
-<Load_Dictionary_Screen>:
-    id:Load_Dictionary_Screen # variablen für den Zugriff
-    name:'Load_Dictionary_Screen'
-
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserIconView:
-            id: filechooser
-
-
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            Button:
-                text: "Cancel"
-                on_release: app.root.current = 'Main_Screen'
-
-            Button:
-                text: "load"
-
-                on_release: Load_Dictionary_Screen.load_dic(filechooser.path, filechooser.selection)
-
 <Main_Screen>:
+    transition: FadeTransition()
     name: 'Main_Screen'
     id: Main_Screen
 
-
     BoxLayout:
+        orientation: 'vertical'
 
-        id: GlobalBox
-        orientation: "vertical"
-        center: self.parent.center
-        width: sp(800)
-        height: sp(600)
 
         BoxLayout:
 
@@ -425,6 +339,84 @@ ScreenManagement: # root Screen
 
                 text: "Create collection"
                 on_press:Main_Screen.button_pressed()
+
+
+<Load_file_Screen>:
+    id:Load_file_Screen # variablen für den Zugriff
+    name:'Load_file_Screen'
+
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.root.current = 'Main_Screen'
+
+            Button:
+                text: "open"
+                on_release: Load_file_Screen.open_file(filechooser.path, filechooser.selection)
+
+
+<Save_translation_Screen>: #Class rule
+    id:Save_translation_Screen
+
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.root.current = 'Main_Screen'
+
+            Button:
+                text: "Save"
+                on_release: Save_translation_Screen.save(filechooser.path, text_input.text)
+
+<Load_Dictionary_Screen>:
+    id:Load_Dictionary_Screen # variablen für den Zugriff
+    name:'Load_Dictionary_Screen'
+
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.root.current = 'Main_Screen'
+
+            Button:
+                text: "load"
+
+                on_release: Load_Dictionary_Screen.load_dic(filechooser.path, filechooser.selection)
+
 
 
 ''')
