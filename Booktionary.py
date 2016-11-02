@@ -231,12 +231,12 @@ class Load_file_Screen(Screen):
                                                  # get_screen - gibt Text aus einen anderen Screen zurück
         if file_name.endswith('.txt'):
 
-            sm.get_screen('Main_Screen').ids.loadfile.filename_2 = file_name
-
             with open(os.path.join(path, filename[0])) as f:
                 sm.get_screen(
                     'Main_Screen').ids.T1.text = f.read()  # get_screen - gibt Text aus einen anderen Screen zurück
                 sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
+
+            #sm.get_screen('Main_Screen').ids.loadfile.filename_2 = file_name
 
         else:
             ofname, iftype = splitext(file_name)[0] + '.txt', splitext(file_name)[1].lower()
@@ -250,14 +250,19 @@ class Load_file_Screen(Screen):
             elif iftype in ('.fb2', '.html', '.htm'):
                 con.fb2_txt(file_name, ofname)
 
-            sm.get_screen('Main_Screen').ids.loadfile.filename_2 = ofname
+            #sm.get_screen('Main_Screen').ids.loadfile.filename_2 = ofname
+
+            with open(ofname, 'r') as f:
+                sm.get_screen(
+                    'Main_Screen').ids.T1.text = f.read()  # get_screen - gibt Text aus einen anderen Screen zurück
+                sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
 
 
-
+    '''
     def selected(self, filename):
         # type: (object) -> object
         print ("selected: %s" % filename[0])
-
+    '''
 
 
 class Save_translation_Screen(Screen):

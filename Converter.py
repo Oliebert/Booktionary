@@ -29,12 +29,14 @@ from xml.etree.ElementTree import parse, XML
 import html.parser
 
 
+'''
+
 def help():
     print('For convertation .doc, .docx, .odt, .htm, .html, .fb2 files:\n\
            fliename \n\
            if whitespace within the filename, take it in quotation mark')
     exit()
-
+'''
 
 def ok():
     print('Converting is done!')
@@ -166,11 +168,11 @@ def convert(ifname):
 
 
 def main():
-    print('\"filename\"')
+   # print('\"filename\"')
     convert('mail_1.docx')
-    if len(argv) != 2:
-        help()
-        exit()
-    if convert(argv[1]) == 1: ok()
+    #if len(argv) != 2:
+     #   help()
+      #  exit()
+    #if convert(argv[1]) == 1: ok()
 if __name__ == '__main__':
-    main()
+   main()
