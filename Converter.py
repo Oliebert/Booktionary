@@ -1,25 +1,5 @@
 # coding=utf-8
 
-#Converting from .pdf with PyPDF2 package
-'''
-import PyPDF2
-def getPDFContent(path):
-    content = ""
-    # Load PDF into pyPDF
-    pdf = PyPDF2.PdfFileReader(open(path, "rb"))
-    # Iterate pages
-    for i in range(0, pdf.getNumPages()):
-        # Extract text from page and add to content
-        content += pdf.getPage(i).extractText() + "\n"
-    # Collapse whitespace
-    content = " ".join(content.replace(u"\xa0", " ").strip().split())
-    return content
-print (getPDFContent("filename.pdf").encode("ascii", "ignore"))
-#Converting with tika package
-from tika import parser
-text = parser.from_file('path')
-print(text)
-'''
 
 
 from sys import argv
@@ -30,7 +10,6 @@ import html.parser
 
 
 '''
-
 def help():
     print('For convertation .doc, .docx, .odt, .htm, .html, .fb2 files:\n\
            fliename \n\
@@ -169,7 +148,7 @@ def convert(ifname):
 
 def main():
    # print('\"filename\"')
-    convert('mail_1.docx')
+    convert('mail_cir.docx')
     #if len(argv) != 2:
      #   help()
       #  exit()

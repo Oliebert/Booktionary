@@ -1,4 +1,9 @@
+import sys
+import gzip
+import struct
+from os import path
 
+from collections import namedtuple, defaultdict
 
 
 class Dictionary:  # GithHub Library

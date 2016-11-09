@@ -12,6 +12,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 import Converter
 from os.path import splitext
 import dictionary
+import PyPDF2
+import codecs
 
 
 IndexEntry = namedtuple('IndexEntry', ('offset', 'size'))
@@ -22,7 +24,7 @@ DefinitionPart = namedtuple('DefinitionPart', ('type', 'data'))
 
 
 class Load_Dictionary_Screen(Screen):
-    
+
     def load_dic(self,path, filename):
 
         new_dic = os.path.join(path, filename[0])
@@ -56,7 +58,7 @@ def sort_words_by_frequency(words):
 
         else:
 
-            count[i] = 1  
+            count[i] = 1
 
     gefiltert = sorted(count.items(), key=lambda x: x[1], reverse=True)
 
@@ -98,10 +100,15 @@ class Load_file_Screen(Screen):
                                                  # get_screen - gibt Text aus einen anderen Screen zurück
         if file_name.endswith('.txt'):
 
-            with open(os.path.join(path, filename[0])) as f:
+            with codecs.open(os.path.join(path, filename[0]),'r', encoding='utf-8') as f:
 
                 sm.get_screen('Main_Screen').ids.T1.text = f.read() # get_screen - gibt Text aus einen anderen Screen zurück
                 sm.current = 'Main_Screen'  # kehrt zu main Screen zurück
+
+        #elif file_name.endswith('.pdf') :
+
+
+
 
         else:
 
